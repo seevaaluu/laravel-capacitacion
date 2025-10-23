@@ -11,9 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('personal_info', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id(); // id autoincremental
+            $table->string('title'); // título del post
+            $table->string('slug')->unique(); // slug único
+            $table->text('content'); // contenido
+            $table->string('author'); // autor
             $table->integer('user_id')->unsigned()->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -22,9 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('personal_info', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');  
-        });
+        Schema::dropIfExists('posts');
     }
 };

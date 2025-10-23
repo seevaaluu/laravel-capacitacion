@@ -48,9 +48,20 @@ class User extends Authenticatable
 
     protected $appends = ['name_and_email'];
     protected $with = ['personal_info'];
+
     public function personal_info()
     {
         return $this->hasOne(Personalinfo::class, 'user_id', 'id');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'id');
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class, 'user_id', 'id');
     }
 
     public function getNameAndEmailAttribute()

@@ -13,9 +13,11 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
-        return $users = $this->search($query);
-        
-        
+        $users = $this->search($query);
+
+        if($request->wantsJson()){
+            return response()->json($users);
+        }
 
         return view('users.index')->with('users', $users);
     }
@@ -23,10 +25,10 @@ class UsersController extends Controller
     public function search($query) 
     {
         //DB::table()::join()
-        return DB::table('users')->where('name', 'like', '%' . $query . '%')
+        return User::where('name', 'like', '%' . $query . '%')
                       ->orWhere('email', 'like', '%' . $query . '%')
                       ->orderBy('id', 'desc')
-                      
+                      ->with(['personal_info', 'posts', 'videos'])
                       ->orderBy('created_at', 'asc')
                       ->paginate(10);
     }

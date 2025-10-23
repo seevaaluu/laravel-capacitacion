@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\PersonalInfoController;
+use App\Http\Controllers\VideosController;
+use App\Http\Controllers\PostsController;
+use App\Http\Controllers\CommentsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,3 +45,11 @@ Route::delete('/users/{id}/delete', [
 
 Route::resource('/personal_info', PersonalInfoController::class);
 
+// Rutas para videoos
+Route::resource('/videos', VideosController::class);
+
+// Rutas para posts
+Route::resource('/posts', PostsController::class);
+
+// Rutas para comentarios
+Route::resource('/comments', CommentsController::class);

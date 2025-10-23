@@ -14,8 +14,8 @@ use App\Http\Controllers\UsersController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::post('/users', [ 
-    UsersController::class, 'store'
+Route::get('/users', [ 
+    UsersController::class, 'index'
 ]);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
