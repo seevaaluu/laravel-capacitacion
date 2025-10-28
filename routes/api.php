@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,15 @@ use App\Http\Controllers\UsersController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::get('/users', [ 
-    UsersController::class, 'index'
-]);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Rutas de autenticacion
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/authenticated-user', [AuthController::class, 'authenticated_user'])->middleware('auth:sanctum');
+
+
+Route::middleware('auth:sanctum')->group(function() {
+    // Ruta de usuarios
+    Route::get('users', [UsersController::class, 'index'])->middleware('can:users.index');
+    Route::get('/inventarios', [InventoryController::class, 'inventarios']);
 });

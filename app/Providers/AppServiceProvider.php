@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Schema::defaultStringLength(192);
+        Schema::defaultStringLength(191);
         Paginator::useBootstrap();
     }
 
