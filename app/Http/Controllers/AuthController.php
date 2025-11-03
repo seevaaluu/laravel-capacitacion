@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -40,15 +43,24 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            // !$user - el usuario no existe
-            // !Hash::check(...) - la contraseña no coincide
-            // Hash::check() compara la contraseña ingresada con la encriptada en la BD
-            
-            throw \ValidationException::withMessages([
-                'email' => ['Las credenciales son incorrectas.'],
+        //if (!$user || !Hash::check($request->password, $user->password)) {
+        //    // !$user - el usuario no existe
+        //    // !Hash::check(...) - la contraseña no coincide
+        //    // Hash::check() compara la contraseña ingresada con la encriptada en la BD
+
+        //    throw \ValidationException::withMessages([
+        //        'email' => ['Las credenciales son incorrectas.'],
+        //    ]);
+        //}
+
+        
+        if (! Auth::attempt(['email' => $request->email, 'password' => $request->password], false)) {
+
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
             ]);
         }
+
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -63,5 +75,19 @@ class AuthController extends Controller
     public function authenticated_user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    /**
+     * Destroy an authenticated session.
+     */
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return response()->noContent();
     }
 }
