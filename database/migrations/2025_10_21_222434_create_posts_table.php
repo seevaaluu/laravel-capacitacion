@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique(); // slug único
             $table->text('content'); // contenido
             $table->string('author'); // autor
-            $table->integer('user_id')->unsigned()->index()->nullable();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
